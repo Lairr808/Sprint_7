@@ -10,14 +10,20 @@ import static org.junit.Assert.assertEquals;
 
 public class CourierLoginTest {
 
-    private Courier courier;
+    private Courier courierDefault;
+    private Courier courierLoginNull;
+    private Courier courierLoginRandom;
+    private Courier courierPasswordRandom;
     private CourierClient courierClient;
     private int id;
 
     @Before
     public void setUp(){
-        courier = CourierGenerator.getDefault();
         courierClient = new CourierClient();
+        courierDefault = CourierGenerator.getDefault();
+        courierLoginNull = CourierGenerator.getLoginNull();
+        courierLoginRandom = CourierGenerator.getLoginRandom();
+        courierPasswordRandom = CourierGenerator.getPasswordRandom();
     }
 
     @After
@@ -26,28 +32,30 @@ public class CourierLoginTest {
     }
 
     @Test
-    public void authorizationWithoutFieldError(){// отсутствует поле
-        ValidatableResponse response = courierClient.create(courier);
-        ValidatableResponse loginResponse = (ValidatableResponse) CourierGenerator.getLoginNull();
-        id = loginResponse.extract().path("id");
-        int statusCode = response.extract().statusCode();
+    public void authorizationWithoutFieldError(){// отсутствует поле при авторизации
+        ValidatableResponse response = courierClient.create(courierDefault);//создай курьера
+        ValidatableResponse loginNullResponse = courierClient.login(CourierCredentials.from(courierLoginNull));
+        int statusCode = loginNullResponse.extract().statusCode();
         assertEquals(SC_BAD_REQUEST, statusCode);
+        ValidatableResponse loginResponse = courierClient.login(CourierCredentials.from(courierDefault));//авторизация
+        id = loginResponse.extract().path("id");
     }
 
     @Test
     public void authorizationNonExistentUserError(){ //несуществующий пользователь (рандом)
-        ValidatableResponse response = (ValidatableResponse) CourierGenerator.getLoginRandom();
+        ValidatableResponse response = courierClient.login(CourierCredentials.from(courierLoginRandom));
         int statusCode = response.extract().statusCode();
         assertEquals(SC_NOT_FOUND, statusCode);
     }
 
     @Test
     public void authorizationNonExistentPasswordError(){ //существующий логин и неверный пароль (рандом)
-        ValidatableResponse response = courierClient.create(courier);//создай курьера
-        ValidatableResponse loginResponse = (ValidatableResponse) CourierGenerator.getPasswordRandom();
-        id = loginResponse.extract().path("id");
-        int statusCode = response.extract().statusCode();
+        ValidatableResponse response = courierClient.create(courierDefault);//создай курьера
+        ValidatableResponse passwordResponse = courierClient.login(CourierCredentials.from(courierPasswordRandom));
+        int statusCode = passwordResponse.extract().statusCode();
         assertEquals(SC_NOT_FOUND, statusCode);
+        ValidatableResponse loginResponse = courierClient.login(CourierCredentials.from(courierDefault));//авторизация
+        id = loginResponse.extract().path("id");
     }
 }
 

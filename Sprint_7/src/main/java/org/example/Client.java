@@ -6,7 +6,7 @@ import io.restassured.specification.RequestSpecification;
 
 public class Client {
 
-    private static final String BASE_URL = "https://qa-scooter.praktikum-services.ru/.";
+    private static final String BASE_URL = "https://qa-scooter.praktikum-services.ru";
 
     protected static RequestSpecification getSpec(){
         return new RequestSpecBuilder()

@@ -4,17 +4,16 @@ import io.restassured.response.ValidatableResponse;
 
 import static io.restassured.RestAssured.given;
 import static org.example.Client.getSpec;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
 
 public class OrdersClient {
-    private static final String PATH = "api/v1/orders";
+    private static final String PATH = "/api/v1/orders";
 
-    public ValidatableResponse create(Orders orders){
-        return given()
+    public ValidatableResponse showList(Orders orders){
+        return given().log().all()
                 .spec(getSpec())
-                .body(orders)
-                .when()
                 .get(PATH)
-                .then();
-
+                .then().assertThat().body( "orders", notNullValue()).log().all();
     }
 }

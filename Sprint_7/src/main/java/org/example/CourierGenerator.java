@@ -4,7 +4,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 
 public class CourierGenerator {
     public static Courier getDefault(){
-        return new Courier("ninja", "1234", "saske");
+        return new Courier("ninjdgfdxxdrta", "1234", "saske");
     }
 
     public static Courier getLoginRandom(){
@@ -16,7 +16,7 @@ public class CourierGenerator {
     }
 
     public static Courier getLoginNull(){
-        return new Courier(null, "1234", "saske");
+        return new Courier("", "1234", "saske");
     }
 
 }

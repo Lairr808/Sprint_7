@@ -14,14 +14,13 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(Parameterized.class)
 public class OrderCreationParametersTest {
-    OrderClient orderClient;
+    OrderClient orderClient = new OrderClient();
     String[] color;
 
     @Before
     public void setUp(){
         OrderGenerator.getDefault(color).setColor(color);
     }
-
     public OrderCreationParametersTest(String[] color) {this.color = color;}
 
     @Parameterized.Parameters
